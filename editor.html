@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tryit Editor — BelajarCoding</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ==================== TOP BAR EDITOR ==================== -->
+  <div class="editor-topbar">
+    <!-- Tombol kembali ke halaman materi -->
+    <button class="btn-home" id="btnHome" title="Kembali ke materi">&larr; Home</button>
+    <span class="title" id="editorTitle">Tryit Editor</span>
+    <!-- Tombol Run berwarna hijau -->
+    <button class="btn-run" id="btnRun">Run &#9654;</button>
+    <!-- Tombol Reset untuk mengembalikan kode awal -->
+    <button class="btn-reset" id="btnReset">Reset</button>
+    <!-- Toggle dark mode, sinkron dengan halaman materi -->
+    <button class="theme-toggle" id="themeToggle" aria-label="Ganti tema">&#9789;</button>
+  </div>
+
+  <!-- ==================== SPLIT-SCREEN LAYOUT ==================== -->
+  <div class="editor-layout">
+    <!-- Pane Kiri: Code Editor (textarea) -->
+    <div class="editor-pane">
+      <label for="code-input">&#128190; Code — Anda bisa menulis HTML, CSS, dan JS di sini</label>
+      <!-- isi awal diambil dari localStorage / URL param oleh editor.js -->
+      <textarea id="code-input" spellcheck="false"></textarea>
+    </div>
+
+    <!-- Pane Kanan: Live Preview (iframe) -->
+    <div class="preview-pane">
+      <label for="preview">&#128202; Result</label>
+      <iframe id="preview"></iframe>
+    </div>
+  </div>
+
+  <script src="auth.js"></script>
+  <script src="gamify.js"></script>
+  <script src="editor.js"></script>
+</body>
+</html>

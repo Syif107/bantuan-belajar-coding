@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Belajar Coding — Tutorial Interaktif</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ==================== TOP NAVBAR (STICKY) ==================== -->
+  <header class="navbar">
+    <button class="hamburger" id="hamburger" aria-label="Buka menu">&#9776;</button>
+
+    <a href="index.html" class="logo">&lt;/&gt; BelajarCoding</a>
+
+    <!-- Menu navigasi bahasa pemrograman -->
+    <nav>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#html" class="active" data-lang="html">HTML</a></li>
+        <li><a href="#css" data-lang="css">CSS</a></li>
+        <li><a href="#js" data-lang="js">JavaScript</a></li>
+      </ul>
+    </nav>
+
+    <div class="nav-right">
+      <!-- Area auth: diisi script.js (Login/Sign Up atau nama user) -->
+      <div class="auth-area" id="authArea"></div>
+      <!-- Tombol panel progres -->
+      <button class="btn-progress" id="btnProgress" title="Lihat progres & pencapaian">&#127942;</button>
+      <!-- Tombol toggle dark mode -->
+      <button class="theme-toggle" id="themeToggle" aria-label="Ganti tema">&#9789;</button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <!-- ==================== LEFT SIDEBAR ==================== -->
+    <!-- Daftar materi diisi oleh script.js agar sinkron dengan konten -->
+    <aside class="sidebar" id="sidebar"></aside>
+
+    <!-- ==================== MAIN CONTENT ==================== -->
+    <!-- Dirender oleh script.js dari data materi -->
+    <main class="content" id="content"></main>
+  </div>
+
+  <script src="lessons.js"></script>
+  <script src="auth.js"></script>
+  <script src="gamify.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

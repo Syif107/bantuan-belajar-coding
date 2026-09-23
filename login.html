@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Masuk / Daftar — BelajarCoding</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="auth-page">
+
+  <main class="auth-card">
+    <a href="index.html" class="logo">&lt;/&gt; BelajarCoding</a>
+
+    <!-- Tab pindah masuk <-> daftar -->
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tabLogin" data-mode="login">Masuk</button>
+      <button class="auth-tab" id="tabSignup" data-mode="signup">Daftar</button>
+    </div>
+
+    <!-- Form "Masuk" -->
+    <form id="formLogin" class="auth-form">
+      <label>Email</label>
+      <input type="email" id="loginEmail" placeholder="kamu@email.com" required />
+
+      <label>Kata sandi</label>
+      <input type="password" id="loginPass" placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;" required />
+
+      <button type="submit" class="btn-auth">Masuk</button>
+    </form>
+
+    <!-- Form "Daftar" -->
+    <form id="formSignup" class="auth-form hidden">
+      <label>Nama</label>
+      <input type="text" id="signupName" placeholder="Nama kamu" required />
+
+      <label>Email</label>
+      <input type="email" id="signupEmail" placeholder="kamu@email.com" required />
+
+      <label>Kata sandi (minimal 6 karakter)</label>
+      <input type="password" id="signupPass" placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;" required />
+
+      <button type="submit" class="btn-auth">Buat Akun</button>
+    </form>
+
+    <!-- Area pesan error / info -->
+    <p id="authMsg" class="auth-msg"></p>
+
+    <p class="auth-note">&#128274; Akun disimpan di <b>perangkat ini</b>
+      (database lokal). Ini versi demo untuk belajar — bukan keamanan produksi.</p>
+    <p class="auth-back"><a href="index.html">&larr; Kembali ke materi</a></p>
+  </main>
+
+  <!-- Dark mode toggle di pojok -->
+  <button class="theme-toggle auth-toggle" id="themeToggle" aria-label="Ganti tema">&#9789;</button>
+
+  <script src="auth.js"></script>
+  <script>
+    /* ============================
+       LOGIKA HALAMAN MASUK / DAFTAR
+       ============================ */
+
+    // --- Sinkron tema dengan halaman lain ---
+    const PREF_KEY = "belajarCoding:dark";
+    function applyTheme(dark) {
+      document.documentElement.setAttribute("data-theme", dark ? "dark" : "");
+      themeToggle.textContent = dark ? "\u2600" : "\u263E";
+    }
+    applyTheme(localStorage.getItem(PREF_KEY) === "dark");
+    document.getElementById("themeToggle").addEventListener("click", () => {
+      const dark = document.documentElement.getAttribute("data-theme") === "dark";
+      applyTheme(!dark);
+      localStorage.setItem(PREF_KEY, dark ? "light" : "dark");
+    });
+
+    // --- Elemen ----------
+    const tabLogin = document.getElementById("tabLogin");
+    const tabSignup = document.getElementById("tabSignup");
+    const formLogin = document.getElementById("formLogin");
+    const formSignup = document.getElementById("formSignup");
+    const msg = document.getElementById("authMsg");
+
+    function showError(text) {
+      msg.textContent = text;
+      msg.className = "auth-msg err";
+    }
+    function showInfo(text) {
+      msg.textContent = text;
+      msg.className = "auth-msg info";
+    }
+
+    // --- Ganti mode tab ---
+    function setMode(mode) {
+      const isLogin = mode === "login";
+      tabLogin.classList.toggle("active", isLogin);
+      tabSignup.classList.toggle("active", !isLogin);
+      formLogin.classList.toggle("hidden", !isLogin);
+      formSignup.classList.toggle("hidden", isLogin);
+      msg.className = "auth-msg";
+    }
+    tabLogin.addEventListener("click", () => setMode("login"));
+    tabSignup.addEventListener("click", () => setMode("signup"));
+
+    // --- Tujuan kembali setelah sukses (?next= boleh dari halaman lain) ---
+    function goBack() {
+      const next = new URLSearchParams(location.search).get("next");
+      location.href = next || "index.html";
+    }
+
+    // --- Login ----------
+    formLogin.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const res = AUTH.login({
+        email: document.getElementById("loginEmail").value,
+        password: document.getElementById("loginPass").value,
+      });
+      if (!res.ok) return showError(res.error);
+      showInfo("Selamat datang kembali, " + res.user.name + "!");
+      setTimeout(goBack, 700);
+    });
+
+    // --- Daftar ----------
+    formSignup.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const res = AUTH.signup({
+        name: document.getElementById("signupName").value,
+        email: document.getElementById("signupEmail").value,
+        password: document.getElementById("signupPass").value,
+      });
+      if (!res.ok) return showError(res.error);
+
+      // Deteksi progres tamu -> tawarkan memindahkannya ke akun ini
+      const guestRaw = localStorage.getItem("belajarCoding:progress:guest");
+      let migrated = false;
+      if (guestRaw) {
+        migrated = confirm(
+          "Kamu punya progres sebagai tamu. Pindahkan XP & materi ke akun ini?"
+        );
+        if (migrated) {
+          AUTH.migrateGuest();
+          showInfo("Progres tamu dipindahkan! Akun " + res.user.name + " siap.");
+        } else {
+          showInfo("Akun " + res.user.name + " berhasil dibuat!");
+        }
+      } else {
+        showInfo("Selamat datang, " + res.user.name + "!");
+      }
+      setTimeout(goBack, migrated ? 900 : 700);
+    });
+  </script>
+</body>
+</html>
